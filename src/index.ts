@@ -1,26 +1,62 @@
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
-
 // Import the native module. On web, it will be resolved to ExpoWalletsdk.web.ts
 // and on native platforms to ExpoWalletsdk.ts
 import ExpoWalletsdkModule from './ExpoWalletsdkModule';
-import ExpoWalletsdkView from './ExpoWalletsdkView';
-import { ChangeEventPayload, ExpoWalletsdkViewProps } from './ExpoWalletsdk.types';
+import {Platform} from "react-native";
 
-// Get the native constant value.
-export const PI = ExpoWalletsdkModule.PI;
 
-export function hello(): string {
-  return ExpoWalletsdkModule.hello();
+const throwIfNotAndroid = () => {
+  if (Platform.OS !== 'android') {
+    throw new Error('This method is only available on Android.');
+  }
+};
+
+export function isEthOS(): boolean {
+  if (Platform.OS !== 'android') {
+    return false;
+  }
+  return ExpoWalletsdkModule.isEthOS();
 }
 
-export async function setValueAsync(value: string) {
-  return await ExpoWalletsdkModule.setValueAsync(value);
+export interface TransactionParams {
+  to: string;
+  value: string;
+  data: string;
+  gasPrice?: string | null;
+  gasAmount?: string;
+  chainId?: number;
 }
 
-const emitter = new EventEmitter(ExpoWalletsdkModule ?? NativeModulesProxy.ExpoWalletsdk);
-
-export function addChangeListener(listener: (event: ChangeEventPayload) => void): Subscription {
-  return emitter.addListener<ChangeEventPayload>('onChange', listener);
+export function sendTransaction(params: TransactionParams) {
+  throwIfNotAndroid();
+  const { to, value, data, gasPrice = null, gasAmount = "21000", chainId = 1 } = params;
+  if (chainId !== getChainId()) {
+    changeChainId(chainId);
+  }
+  return ExpoWalletsdkModule.sendTransaction(to, value, data, gasPrice, gasAmount, chainId);
 }
 
-export { ExpoWalletsdkView, ExpoWalletsdkViewProps, ChangeEventPayload };
+export interface SignMessageParams {
+  message: string;
+  type?: string;
+}
+
+export function signMessage(params: SignMessageParams) {
+  throwIfNotAndroid();
+  const { message, type = 'personal_sign' } = params;
+  return ExpoWalletsdkModule.signMessage(message, type);
+}
+
+export function getAddress() {
+  throwIfNotAndroid();
+  return ExpoWalletsdkModule.getAddress();
+}
+
+export function getChainId() {
+  throwIfNotAndroid();
+  return ExpoWalletsdkModule.getChainId();
+}
+
+export function changeChainId(chainId: number) {
+  throwIfNotAndroid();
+  return ExpoWalletsdkModule.changeChainId(chainId);
+}

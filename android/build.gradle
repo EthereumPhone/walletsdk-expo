@@ -46,6 +46,7 @@ afterEvaluate {
       maven {
         url = mavenLocal().url
       }
+      maven { url = 'https://jitpack.io' }
     }
   }
 }
@@ -86,4 +87,6 @@ repositories {
 dependencies {
   implementation project(':expo-modules-core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
+  implementation 'org.web3j:core:4.8.8-android'
+  implementation 'com.github.EthereumPhone:WalletSDK:completable-futures-SNAPSHOT'
 }

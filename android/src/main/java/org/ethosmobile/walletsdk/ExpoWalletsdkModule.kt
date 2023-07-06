@@ -2,6 +2,8 @@ package org.ethosmobile.walletsdk
 
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import android.content.Context
+import org.ethereumphone.walletsdk.WalletSDK
 
 class ExpoWalletsdkModule : Module() {
   // Each module class must implement the definition function. The definition consists of components
@@ -13,35 +15,61 @@ class ExpoWalletsdkModule : Module() {
     // The module will be accessible from `requireNativeModule('ExpoWalletsdk')` in JavaScript.
     Name("ExpoWalletsdk")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants(
-      "PI" to Math.PI
-    )
-
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
-
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      "Hello world! 👋"
+    Function("isEthOS") {
+      return@Function isEthOS()
     }
 
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { value: String ->
-      // Send an event to JavaScript.
-      sendEvent("onChange", mapOf(
-        "value" to value
-      ))
+    Function("sendTransaction") { to: String, value: String, data: String, gasPrice: String?, gasAmount: String, chainId: Int ->
+      return@Function sendTransaction(to, value, data, gasPrice, gasAmount, chainId)
     }
 
-    // Enables the module to be used as a native view. Definition components that are accepted as part of
-    // the view definition: Prop, Events.
-    View(ExpoWalletsdkView::class) {
-      // Defines a setter for the `name` prop.
-      Prop("name") { view: ExpoWalletsdkView, prop: String ->
-        println(prop)
-      }
+    Function("signMessage") { message: String, type: String ->
+      return@Function signMessage(message, type)
     }
+
+    Function("getAddress") {
+      return@Function getAddress()
+    }
+
+    Function("changeChainId") { chainId: Int ->
+      return@Function changeChainId(chainId)
+    }
+
+    Function("getChainId") {
+      return@Function getChainId()
+    }
+  }
+
+  private val context
+  get() = requireNotNull(appContext.reactContext)
+
+  fun isEthOS(): Boolean {
+    return context.getSystemService("wallet") != null
+  }
+
+  fun sendTransaction(to: String, value: String, data: String, gasPrice: String? = null, gasAmount: String = "21000", chainId: Int = 1): String {
+    val wallet = WalletSDK(context)
+    return (wallet.sendTransaction(to, value, data, gasPrice, gasAmount, chainId).get())
+  }
+
+  fun signMessage(message: String, type: String = "personal_sign"): String {
+    val wallet = WalletSDK(context)
+    return (wallet.signMessage(message, type).get())
+  }
+
+  fun getAddress(): String {
+    val wallet = WalletSDK(context)
+    return (wallet.getAddress())
+  }
+
+  fun changeChainId(chainId: Int): String {
+    val wallet = WalletSDK(context)
+    return (wallet.changeChainid(chainId).get())
+  }
+
+  fun getChainId(): Int {
+    val wallet = WalletSDK(context)
+    return (wallet.getChainId())
   }
 }

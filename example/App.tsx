@@ -1,11 +1,27 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 import * as ExpoWalletsdk from 'expo-walletsdk';
+import {SignMessageParams} from 'expo-walletsdk';
+
+
+function signMessage() {
+  var signMessageParams: SignMessageParams = {
+    message: "Hello World"
+  }
+  var result = ExpoWalletsdk.signMessage(signMessageParams)
+
+  console.log(result)
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>{ExpoWalletsdk.hello()}</Text>
+      {
+        ExpoWalletsdk.isEthOS() ?
+          <Text>Running on EthOS</Text> :
+          <Text>Not running on EthOS</Text>
+      }
+      <Button title='Sign Message' onPress={signMessage}></Button>
     </View>
   );
 }
