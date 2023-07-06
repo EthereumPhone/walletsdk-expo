@@ -11,7 +11,10 @@ npm install expo-walletsdk
 ### How to use it
 You want to first check if the device is ethOS before running signMessage or sendTransaction. 
 
-Start by importing all the ethOS WalletSDK functions like this: `import * as ExpoWalletsdk from 'expo-walletsdk';`
+Start by importing all the ethOS WalletSDK functions like this:
+```ts
+import * as ExpoWalletsdk from 'expo-walletsdk';
+```
 
 Then you can call `ExpoWalletsdk.isEthOS()`, which will return true if the device is running ethOS.
 
