@@ -1,19 +1,6 @@
 # expo-walletsdk
 
-ethOS WalletSDK for expo
-
-# API documentation
-
-- [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/walletsdk.md)
-- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/walletsdk/)
-
-# Installation in managed Expo projects
-
-For [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.
-
-# Installation in bare React Native projects
-
-For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
+ethOS WalletSDK for Expo apps.
 
 ### Add the package to your npm dependencies
 
@@ -21,15 +8,31 @@ For bare React Native projects, you must ensure that you have [installed and con
 npm install expo-walletsdk
 ```
 
-### Configure for iOS
+### How to use it
+You want to first check if the device is ethOS before running signMessage or sendTransaction. 
 
-Run `npx pod-install` after installing the npm package.
+Start by importing all the ethOS WalletSDK functions like this: `import * as ExpoWalletsdk from 'expo-walletsdk';`
 
+Then you can call `ExpoWalletsdk.isEthOS()`, which will return true if the device is running ethOS.
 
-### Configure for Android
+### How to sign a message: 
+```ts
+var signMessageParams: ExpoWalletsdk.SignMessageParams = {
+    message: "Hello World"
+}
+var result = ExpoWalletsdk.signMessage(signMessageParams)
+```
 
+### How to send Transactions:
+```ts
+var txParams: ExpoWalletsdk.TransactionParams = {
+    to: "",
+    value: "1000000000000000000", // 1 eth in wei
+    data: ""
+}
+var txId = ExpoWalletsdk.sendTransaction(params)
+```
 
+### Support
 
-# Contributing
-
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide]( https://github.com/expo/expo#contributing).
+If you have any comments/questions please feel free to ask them in our discord: https://discord.gg/unqv49a66f

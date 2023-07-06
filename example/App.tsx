@@ -1,11 +1,11 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 import * as ExpoWalletsdk from 'expo-walletsdk';
-import {SignMessageParams} from 'expo-walletsdk';
+
 
 
 function signMessage() {
-  var signMessageParams: SignMessageParams = {
+  var signMessageParams: ExpoWalletsdk.SignMessageParams = {
     message: "Hello World"
   }
   var result = ExpoWalletsdk.signMessage(signMessageParams)
