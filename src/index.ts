@@ -10,7 +10,7 @@ const throwIfNotAndroid = () => {
   }
 };
 
-export function isEthOS(): boolean {
+export function hasSystemWallet(): boolean {
   if (Platform.OS !== 'android') {
     return false;
   }
@@ -20,19 +20,30 @@ export function isEthOS(): boolean {
 export interface TransactionParams {
   to: string;
   value: string;
-  data: string;
+  data?: string | null;
   gasPrice?: string | null;
-  gasAmount?: string;
-  chainId?: number;
+  gasAmount?: string | null;
+  chainId?: number | null;
+  chainRPCUrl?: string | null;
 }
 
 export function sendTransaction(params: TransactionParams) {
   throwIfNotAndroid();
-  const { to, value, data, gasPrice = null, gasAmount = "21000", chainId = 1 } = params;
-  if (chainId !== getChainId()) {
-    changeChainId(chainId);
+  const { to, value, data, gasPrice = null, gasAmount, chainId = 1, chainRPCUrl = "https://cloudflare-eth.com" } = params;
+  var newData = data;
+  var newGasAmount = gasAmount;
+  if (newData === undefined) {
+    newData = ""
+    //newGasAmount = "21000"
+  } else if (newGasAmount === undefined) {
+    newGasAmount = "0x0"
   }
-  return ExpoWalletsdkModule.sendTransaction(to, value, data, gasPrice, gasAmount, chainId);
+
+  if (chainId !== getChainId()) {
+    changeChainId(chainId!!, chainRPCUrl!!);
+  }
+  console.log("Change chain done")
+  return ExpoWalletsdkModule.sendTransaction(to, value, newData, gasPrice, gasAmount, chainId, chainRPCUrl);
 }
 
 export interface SignMessageParams {
@@ -56,7 +67,7 @@ export function getChainId() {
   return ExpoWalletsdkModule.getChainId();
 }
 
-export function changeChainId(chainId: number) {
+export function changeChainId(chainId: number, rpcUrl: string) {
   throwIfNotAndroid();
-  return ExpoWalletsdkModule.changeChainId(chainId);
+  return ExpoWalletsdkModule.changeChainId(chainId, rpcUrl);
 }
