@@ -1,6 +1,6 @@
 {
   "name": "expo-walletsdk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "ethOS WalletSDK for expo",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -19,7 +19,10 @@
     "react-native",
     "expo",
     "expo-walletsdk",
-    "ExpoWalletsdk"
+    "ExpoWalletsdk",
+    "EthereumPhone",
+    "ethOS",
+    "Ethereum"
   ],
   "repository": "https://github.com/EthereumPhone/walletsdk-expo",
   "bugs": {
